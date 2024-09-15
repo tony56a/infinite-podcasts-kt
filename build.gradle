@@ -4,7 +4,7 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.25-1.0.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.4.2"
-    id("com.google.protobuf") version "0.9.2"
+    id("org.flywaydb.flyway") version "10.18.0"
 }
 
 version = "0.1"
@@ -33,12 +33,14 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-json:${exposedVersion}")
     implementation("org.mapstruct:mapstruct:1.6.0")
     implementation("com.zharguy.protos:protos:+")
+    implementation("org.flywaydb:flyway-core:10.18.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("org.postgresql:postgresql:42.7.4")
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0'
 
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("org.flywaydb:flyway-database-postgresql")
-    runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.yaml:snakeyaml")
 
     testImplementation("org.mockito:mockito-core")
@@ -53,23 +55,9 @@ java {
     sourceCompatibility = JavaVersion.toVersion("17")
 }
 
-
-sourceSets {
-    main {
-        java {
-            srcDirs("build/generated/source/proto/main/grpc")
-            srcDirs("build/generated/source/proto/main/java")
-        }
-    }
-}
-
-protobuf {
-    protoc { artifact = "com.google.protobuf:protoc:3.25.4" }
-    plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.66.0" }
-    }
-    generateProtoTasks {
-        all()*.plugins { grpc {} }
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
