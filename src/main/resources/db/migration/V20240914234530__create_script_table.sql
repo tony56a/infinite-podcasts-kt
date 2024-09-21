@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS scripts
 (
-    id VARCHAR PRIMARY KEY,
-    requested_at TIMESTAMP NOT NULL,
-    fulfilled_at TIMESTAMP,
-    requesting_user VARCHAR NOT NULL,
-    topic VARCHAR,
-    script_type VARCHAR,
+    id UUID PRIMARY KEY,
+    requested_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    fulfilled_at TIMESTAMP WITH TIME ZONE,
+    requesting_user UUID NOT NULL,
+    topic TEXT,
+    script_type VARCHAR(255),
     characters JSONB,
     script_lines JSONB
 );

@@ -1,0 +1,1 @@
+ALTER TABLE scripts ADD request_id UUID;
