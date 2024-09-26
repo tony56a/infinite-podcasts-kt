@@ -9,31 +9,32 @@ import jakarta.inject.Singleton
 import net.logstash.logback.argument.StructuredArguments.kv
 import org.slf4j.LoggerFactory
 
-@Singleton
-class ScriptGenService {
-    companion object {
-        private val logger = LoggerFactory.getLogger(ScriptGenService::class.java)
-    }
+// TODO: Replace with versioned DB
 
-    val prompt: String = """
+private const val PROMPT = """
         create a JSON code block without any other comments or text at least 3000 tokens long,
         containing a podcast script of an episode of the Poe Reagan show in the style of the Joe Rogan experience,
         between a male podcast host named Poe Reagan, and a %s character that is %s, with %s
         Do not talk, do not say anything else other then the JSON block.
         
         Topic: '%s'
-    """.trimIndent()
+    """
 
-    val systemMessage: String = """
+private const val SYSTEM_MESSAGE = """
         You are only capable of returning JSON responses in the following format:
         
         { \"guest_name\": \"guest name\", \"guest_type\": \"normal, robot, skeleton\", \"guest_speaker_voice_type\": \"male or female\", \"lines\": [ {\"speaker\": \"poe or guest\", \"content\": \"text of the speaker\"} ] }
-    """.trimIndent()
+    """
 
-    val randomVoiceTypeStr: String = "male or female"
+private const val RANDOM_VOICE_TYPE_STR = "male or female"
 
-    val randomName: String = "an actual random name"
+private const val RANDOM_NAME_STR = "an actual random name"
 
+@Singleton
+class ScriptGenService {
+    companion object {
+        private val logger = LoggerFactory.getLogger(ScriptGenService::class.java)
+    }
 
     @Inject
     lateinit var groqService: LlmService
@@ -43,7 +44,7 @@ class ScriptGenService {
         logger.info("Generating script", kv("script_id", request.id))
         val (generatedLines, characters) = llmService.performInference(
             request,
-            systemMessage = systemMessage,
+            systemMessage = SYSTEM_MESSAGE.trimIndent(),
             promptMessage = generatePrompt(request),
         )
         return request.copy(
@@ -61,12 +62,12 @@ class ScriptGenService {
         // Get character info
         val guestCharacter = requireNotNull(request.characters).single()
         val guestTypeStr = (guestCharacter.characterType ?: CharacterType.NORMAL).toString().lowercase()
-        val guestVoiceTypeStr = guestCharacter.speakerVoiceType?.toString()?.lowercase() ?: randomVoiceTypeStr
+        val guestVoiceTypeStr = guestCharacter.speakerVoiceType?.toString()?.lowercase() ?: RANDOM_VOICE_TYPE_STR
         val guestNameStr = guestCharacter.name?.let { name ->
             "the name $name"
-        } ?: randomName
+        } ?: RANDOM_NAME_STR
 
-        return prompt.format(
+        return PROMPT.trimIndent().format(
             guestTypeStr,
             guestVoiceTypeStr,
             guestNameStr,

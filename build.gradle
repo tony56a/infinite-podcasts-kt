@@ -25,6 +25,7 @@ dependencies {
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut:micronaut-discovery-core")
+    implementation("io.micronaut.rabbitmq:micronaut-rabbitmq")
     implementation("javax.annotation:javax.annotation-api")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
     implementation("org.flywaydb:flyway-core:10.18.0")

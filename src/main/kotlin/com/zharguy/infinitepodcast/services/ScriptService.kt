@@ -1,11 +1,13 @@
 package com.zharguy.infinitepodcast.services
 
+import com.zharguy.infinitepodcast.events.publishers.GenerateScriptPublisher
 import com.zharguy.infinitepodcast.repos.ScriptsRepository
 import com.zharguy.infinitepodcast.repos.dbQuery
 import com.zharguy.infinitepodcast.repos.models.ScriptStatus
 import com.zharguy.infinitepodcast.services.mappers.fromDataModel
 import com.zharguy.infinitepodcast.services.mappers.toDataModel
 import com.zharguy.infinitepodcast.services.models.ScriptModel
+import com.zharguy.protos.scripts.GenerateScriptEvent
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import net.logstash.logback.argument.StructuredArguments.kv
@@ -29,9 +31,12 @@ class ScriptService {
     lateinit var audioGenerationService: AudioGenerationService
 
     @Inject
+    lateinit var generateEventPublisher: GenerateScriptPublisher
+
+    @Inject
     lateinit var scriptsRepository: ScriptsRepository
 
-    suspend fun addScript(scriptModel: ScriptModel, processSync: Boolean = true): ScriptModel {
+    suspend fun addScript(scriptModel: ScriptModel, processSync: Boolean = false): ScriptModel {
         val persistedScript = try {
             val scriptDataModel = dbQuery {
                 // Create the user/return the existing user
@@ -59,7 +64,10 @@ class ScriptService {
                 persistedScript
             }
         } else {
-            logger.warn("publishing event processing script ")
+            logger.info("publishing event processing script", kv("script_id", persistedScript.id))
+            generateEventPublisher.send(
+                GenerateScriptEvent.newBuilder().setId(persistedScript.id.toString()).build()
+            )
             persistedScript
         }
 
