@@ -94,4 +94,10 @@ class ScriptService {
         return retVal
     }
 
+    suspend fun getScript(scriptId: UUID): ScriptModel {
+        return dbQuery {
+            scriptsRepository.retrieveScriptById(scriptId).fromDataModel()
+        }
+    }
+
 }

@@ -3,10 +3,7 @@ package com.zharguy.infinitepodcast.handlers
 import com.zharguy.infinitepodcast.handlers.mappers.toProto
 import com.zharguy.infinitepodcast.handlers.mappers.toScriptModel
 import com.zharguy.infinitepodcast.services.ScriptService
-import com.zharguy.protos.scripts.CreateScriptRequest
-import com.zharguy.protos.scripts.GenerateScriptRequest
-import com.zharguy.protos.scripts.Script
-import com.zharguy.protos.scripts.ScriptServiceGrpcKt
+import com.zharguy.protos.scripts.*
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import net.logstash.logback.argument.StructuredArguments.kv
@@ -45,6 +42,16 @@ class ScriptServiceHandler : ScriptServiceGrpcKt.ScriptServiceCoroutineImplBase(
         return try {
             val scriptModel = scriptService.generateScript(UUID.fromString(request.id))
 
+            scriptModel.toProto()
+        } catch (e: Throwable) {
+            logger.error("error", kv("exception", e))
+            throw e
+        }
+    }
+
+    override suspend fun getScript(request: GetScriptRequest): Script {
+        return try {
+            val scriptModel = scriptService.getScript(UUID.fromString(request.id))
             scriptModel.toProto()
         } catch (e: Throwable) {
             logger.error("error", kv("exception", e))
