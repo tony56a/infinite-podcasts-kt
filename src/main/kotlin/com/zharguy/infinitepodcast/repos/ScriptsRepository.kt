@@ -11,6 +11,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.update
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -41,21 +42,37 @@ class ScriptsRepository {
             }
     }
 
+    fun updateScriptContent(script: ScriptDataModel): ScriptDataModel {
+        retrieveScriptById(requireNotNull(script.id))
+        Scripts.update({ Scripts.id eq script.id }) {
+            it[characters] = script.characters
+            it[scriptLines] = script.scriptLines
+            it[fulfilledAt] = OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
+            it[status] = script.status
+        }
+        return retrieveScriptById(requireNotNull(script.id))
+    }
+
     fun retrieveScriptById(scriptId: UUID): ScriptDataModel {
-        return (Scripts innerJoin Users).selectAll().where { (Scripts.id eq scriptId) }
-            .map { val user = it.toUserDataModel()
-                it.toScriptDataModel(user) }
+        return (Scripts innerJoin Users).selectAll().where { (Scripts.id eq scriptId) }.forUpdate()
+            .map {
+                val user = it.toUserDataModel()
+                it.toScriptDataModel(user)
+            }
             .single()
     }
 
     fun retrieveScriptByExtId(requestId: UUID): ScriptDataModel {
-        return doRetrieveScriptByRequestId(requestId = requestId) ?: throw IllegalArgumentException("Not found for extId and source")
+        return doRetrieveScriptByRequestId(requestId = requestId)
+            ?: throw IllegalArgumentException("Not found for extId and source")
     }
 
     private fun doRetrieveScriptByRequestId(requestId: UUID): ScriptDataModel? {
-        return (Scripts innerJoin Users).selectAll().where { (Scripts.requestId eq requestId) }
-            .map { val user = it.toUserDataModel()
-                it.toScriptDataModel(user) }
+        return (Scripts innerJoin Users).selectAll().where { (Scripts.requestId eq requestId) }.forUpdate()
+            .map {
+                val user = it.toUserDataModel()
+                it.toScriptDataModel(user)
+            }
             .singleOrNull()
     }
 

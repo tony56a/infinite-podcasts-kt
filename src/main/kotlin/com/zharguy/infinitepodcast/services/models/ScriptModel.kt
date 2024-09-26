@@ -14,6 +14,6 @@ data class ScriptModel(
     val scriptType: ScriptType,
     val requestingUser: UserModel,
     val status: ScriptStatus?,
-    val characters: Map<String, ScriptGuestCharacterModel>? = null,
+    val characters: List<ScriptGuestCharacterModel>? = null,
     val scriptLines: List<ScriptContentLineModel>? = null,
 )

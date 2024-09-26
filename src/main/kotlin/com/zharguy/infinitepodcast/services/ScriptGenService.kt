@@ -6,12 +6,17 @@ import com.zharguy.infinitepodcast.services.llm.LlmService
 import com.zharguy.infinitepodcast.services.models.ScriptModel
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import net.logstash.logback.argument.StructuredArguments.kv
+import org.slf4j.LoggerFactory
 
 @Singleton
 class ScriptGenService {
+    companion object {
+        private val logger = LoggerFactory.getLogger(ScriptGenService::class.java)
+    }
 
     val prompt: String = """
-        create a JSON code block without any other comments or text at least 1500 tokens long,
+        create a JSON code block without any other comments or text at least 3000 tokens long,
         containing a podcast script of an episode of the Poe Reagan show in the style of the Joe Rogan experience,
         between a male podcast host named Poe Reagan, and a %s character that is %s, with %s
         Do not talk, do not say anything else other then the JSON block.
@@ -35,7 +40,7 @@ class ScriptGenService {
 
     suspend fun performInference(request: ScriptModel): ScriptModel {
         val llmService = selectLlmClient(request)
-
+        logger.info("Generating script", kv("script_id", request.id))
         val (generatedLines, characters) = llmService.performInference(
             request,
             systemMessage = systemMessage,
@@ -60,7 +65,7 @@ class ScriptGenService {
         val guestNameStr = guestCharacter.name?.let { name ->
             "the name $name"
         } ?: randomName
-        
+
         return prompt.format(
             guestTypeStr,
             guestVoiceTypeStr,

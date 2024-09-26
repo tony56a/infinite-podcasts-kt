@@ -9,12 +9,12 @@ import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
 import com.zharguy.infinitepodcast.services.models.ScriptGuestCharacterModel
 import com.zharguy.infinitepodcast.services.models.ScriptModel
 import com.zharguy.infinitepodcast.services.models.UserModel
-import com.zharguy.protos.common.User as UserProto
 import com.zharguy.protos.scripts.ScriptContentLine
 import com.zharguy.protos.scripts.ScriptGuestCharacter
 import org.mapstruct.*
 import org.mapstruct.factory.Mappers
 import com.zharguy.protos.common.ExtUserSource as ExtUserSourceProto
+import com.zharguy.protos.common.User as UserProto
 import com.zharguy.protos.scripts.CharacterType as CharacterTypeProto
 import com.zharguy.protos.scripts.Script as ScriptProto
 import com.zharguy.protos.scripts.ScriptType as ScriptTypeProto
@@ -51,8 +51,8 @@ abstract class ApiMappers {
         nameTransformationStrategy = MappingConstants.STRIP_PREFIX_TRANSFORMATION,
         configuration = "CHARACTER_TYPE_"
     )
-    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.THROW_EXCEPTION)
-    abstract fun toModel(userSourceProto: CharacterTypeProto): CharacterType
+    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
+    abstract fun toModel(userSourceProto: CharacterTypeProto): CharacterType?
 
     @InheritInverseConfiguration
     abstract fun toProto(userSourceProto: CharacterType): CharacterTypeProto
@@ -62,36 +62,40 @@ abstract class ApiMappers {
         nameTransformationStrategy = MappingConstants.STRIP_PREFIX_TRANSFORMATION,
         configuration = "SPEAKER_VOICE_TYPE_"
     )
-    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.THROW_EXCEPTION)
-    abstract fun toModel(userSourceProto: SpeakerVoiceTypeProto): SpeakerVoiceType
+    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
+    abstract fun toModel(userSourceProto: SpeakerVoiceTypeProto): SpeakerVoiceType?
 
     @InheritInverseConfiguration
     abstract fun toProto(userSourceProto: SpeakerVoiceType): SpeakerVoiceTypeProto
 
-    abstract fun toModel(userProto: UserProto): UserModel
-    abstract fun toProto(userProto: UserModel): UserProto
+    abstract fun toModel(proto: UserProto): UserModel
+    abstract fun toProto(model: UserModel): UserProto
 
-    abstract fun toModel(userProto: ScriptGuestCharacter): ScriptGuestCharacterModel
-    abstract fun toProto(userProto: ScriptGuestCharacterModel): ScriptGuestCharacter
+    abstract fun toModel(proto: ScriptGuestCharacter): ScriptGuestCharacterModel
+    abstract fun toProto(model: ScriptGuestCharacterModel): ScriptGuestCharacter
 
-    abstract fun toModel(userProto: ScriptContentLine): ScriptContentLineModel
-    abstract fun toProto(userProto: ScriptContentLineModel): ScriptContentLine
+    abstract fun toModel(proto: ScriptContentLine): ScriptContentLineModel
+    abstract fun toProto(model: ScriptContentLineModel): ScriptContentLine
 
-    abstract fun toModel(userProto: ScriptProto): ScriptModel
-    @Mappings(
-        Mapping(target = "characters", ignore = true)
-    )
-    abstract fun toProto(userProto: ScriptModel): ScriptProto
+    abstract fun toModel(proto: ScriptProto): ScriptModel
+    abstract fun toProto(model: ScriptModel): ScriptProto
 
     @AfterMapping
     fun mapCharacterLinesToProto(model: ScriptModel, @MappingTarget scriptProto: ScriptProto.Builder) {
-        scriptProto.putAllCharacters(model.characters?.map {
-            (name, character) -> name to mapper.toProto(character)
-        }?.toMap() ?: emptyMap())
-
-        scriptProto.addAllScriptLines(model.scriptLines?.map {
-            line -> mapper.toProto(line)
+        scriptProto.addAllCharacters(model.characters?.map { character ->
+            mapper.toProto(character)
         } ?: emptyList())
+
+        scriptProto.addAllScriptLines(model.scriptLines?.map { line ->
+            mapper.toProto(line)
+        } ?: emptyList())
+    }
+
+    @AfterMapping
+    fun mapCharacterFromProto(scriptProto: ScriptProto, @MappingTarget model: ScriptModel): ScriptModel {
+        return model.copy(
+            characters = scriptProto.charactersList.map { character -> mapper.toModel(character) }
+        )
     }
 }
 

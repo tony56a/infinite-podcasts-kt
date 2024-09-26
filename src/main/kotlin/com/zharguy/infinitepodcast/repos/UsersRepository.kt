@@ -6,7 +6,10 @@ import com.zharguy.infinitepodcast.repos.tables.Users
 import com.zharguy.infinitepodcast.repos.tables.toUserDataModel
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insertAndGetId
+import org.jetbrains.exposed.sql.selectAll
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -32,17 +35,18 @@ class UsersRepository {
     }
 
     fun retrieveUserById(userId: UUID): UserDataModel {
-        return Users.selectAll().where { Users.id eq userId }
+        return Users.selectAll().where { Users.id eq userId }.forUpdate()
             .map { it.toUserDataModel() }
             .single()
     }
 
     fun retrieveUserByExtId(extId: String, extIdSource: ExtUserSource): UserDataModel {
-        return doRetrieveUserByExtId(extId = extId, extIdSource = extIdSource) ?: throw IllegalArgumentException("Not found for extId and source")
+        return doRetrieveUserByExtId(extId = extId, extIdSource = extIdSource)
+            ?: throw IllegalArgumentException("Not found for extId and source")
     }
 
     private fun doRetrieveUserByExtId(extId: String, extIdSource: ExtUserSource): UserDataModel? {
-        return Users.selectAll().where { (Users.extId eq extId) and (Users.userSource eq extIdSource) }
+        return Users.selectAll().where { (Users.extId eq extId) and (Users.userSource eq extIdSource) }.forUpdate()
             .map { it.toUserDataModel() }
             .singleOrNull()
     }

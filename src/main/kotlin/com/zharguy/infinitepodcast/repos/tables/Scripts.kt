@@ -24,9 +24,9 @@ object Scripts : UUIDTable("scripts") {
     val topic: Column<String> = text("topic").index("idx_scripts_topic")
     val scriptType: Column<ScriptType> = enumerationByName("script_type", 100)
     val status: Column<ScriptStatus> = enumerationByName("status", 100)
-    val characters: Column<Map<String, ScriptGuestCharacterDataModel>?> = jsonb("characters",
+    val characters: Column<List<ScriptGuestCharacterDataModel>?> = jsonb("characters",
         { mapper.writeValueAsString(it) },
-        { mapper.readValue<Map<String, ScriptGuestCharacterDataModel>>(it) }).nullable()
+        { mapper.readValue<List<ScriptGuestCharacterDataModel>>(it) }).nullable()
     val scriptLines: Column<List<ScriptContentLineDataModel>?> = jsonb("script_lines",
         { mapper.writeValueAsString(it) },
         { mapper.readValue<List<ScriptContentLineDataModel>>(it) }).nullable()

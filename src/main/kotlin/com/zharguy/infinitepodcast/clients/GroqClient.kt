@@ -9,7 +9,7 @@ import io.micronaut.http.annotation.*
 import io.micronaut.http.client.annotation.Client
 
 
-@Client(value = "\${groq.url}")
+@Client(id = "groq")
 interface GroqClient {
 
     @Post("/openai/v1/chat/completions")
@@ -17,7 +17,7 @@ interface GroqClient {
     fun chatCompletion(@Body request: ChatCompletionRequest): ChatCompletion
 }
 
-@ClientFilter(Filter.MATCH_ALL_PATTERN, serviceId = ["\${groq.url}"])
+@ClientFilter(Filter.MATCH_ALL_PATTERN, serviceId = ["groq"])
 class GroqAuthFilter(private val configuration: GroqConfiguration) {
 
     @RequestFilter

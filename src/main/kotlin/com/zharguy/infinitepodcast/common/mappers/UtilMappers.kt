@@ -42,4 +42,14 @@ abstract class UtilMappers {
             stringValue { value = uuid.toString() }
         } ?: StringValue.getDefaultInstance()
     }
+
+    fun mapStringValueToString(protoValue: StringValue): String? {
+        return protoValue.value
+    }
+
+    fun mapStringToStringValue(jvmStr: String?): StringValue {
+        return jvmStr?.let {
+            stringValue { value = jvmStr }
+        } ?: StringValue.getDefaultInstance()
+    }
 }

@@ -2,6 +2,8 @@ Thumbs.db
 .DS_Store
 .gradle
 db_volume/
+tts/mimic3
+rabbitmq/
 build/
 target/
 out/
