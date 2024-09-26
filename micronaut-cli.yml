@@ -1,6 +1,0 @@
-applicationType: grpc
-defaultPackage: com.zharguy.infinitepodcast
-testFramework: junit
-sourceLanguage: kotlin
-buildTool: gradle
-features: [app-name, discovery-core, gradle, grpc, http-client-test, junit, kotlin, kotlin-application, ksp, logback, micronaut-build, properties, readme, serialization-jackson, shade]

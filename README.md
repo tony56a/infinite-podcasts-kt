@@ -1,29 +1,43 @@
-## Micronaut 4.6.1 Documentation
+# Infinite Podcast(-Kt 🎉)
 
-- [User Guide](https://docs.micronaut.io/4.6.1/guide/index.html)
-- [API Reference](https://docs.micronaut.io/4.6.1/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/4.6.1/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
 ---
 
-- [Protobuf Gradle Plugin](https://plugins.gradle.org/plugin/com.google.protobuf)
-- [Micronaut Gradle Plugin documentation](https://micronaut-projects.github.io/micronaut-gradle-plugin/latest/)
-- [GraalVM Gradle Plugin documentation](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
-- [Shadow Gradle Plugin](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow)
-## Feature serialization-jackson documentation
+Service for generating podcasts, similar to the [python](https://github.com/tony56a/infinite-podcast/tree/main)
+version, but using a Kotlin "canonical service stack", with:
 
-- [Micronaut Serialization Jackson Core documentation](https://micronaut-projects.github.io/micronaut-serialization/latest/guide/)
+* Micronaut as the DI/service framework
+* Postgres for DB
+* RabbitMQ as the internal job queue
+* gRPC as the main RPC protocol
+    * proto schemas are defined in the separate protos repository
 
+For simplicity, sidecar services are deployed via Docker
 
-## Feature discovery-core documentation
+## System Architecture
 
-- [Micronaut Discovery Core documentation](https://micronaut-projects.github.io/micronaut-discovery-client/latest/guide/)
+TODO
 
+## How to Deploy
 
-## Feature ksp documentation
+### Docker
 
-- [Micronaut Kotlin Symbol Processing (KSP) documentation](https://docs.micronaut.io/latest/guide/#kotlin)
+* Get Docker
+* Run `docker-compose up -d` to bring up sidecar services
+* Run `./gradlew run`
 
-- [https://kotlinlang.org/docs/ksp-overview.html](https://kotlinlang.org/docs/ksp-overview.html)
+## TODO
 
-
+* per-model logging tags
+* DB for versioned LLM prompts
+* multiple LLM clients
+* dynamic configuration files
+* object store for audio clips
+* Docker image for main application
+* CI/CD to build/test image
+* Unit tests
+* gRPC error handling interceptor
+* Rate limiting
+    * Application layer, not in gRPC filter/interceptor though
+* metrics
+* authZ
+* consistent logging
