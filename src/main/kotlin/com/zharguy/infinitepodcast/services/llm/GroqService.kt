@@ -26,7 +26,7 @@ class GroqService : LlmService {
         private val logger = LoggerFactory.getLogger(GroqService::class.java)
     }
 
-    val model: ChatCompletionModel = ChatCompletionModel.LLAMA31_70B
+    val model: ChatCompletionModel = ChatCompletionModel.LLAMA32_90B
 
     @Inject
     lateinit var objectMapper: ObjectMapper

@@ -1,4 +1,4 @@
-package com.zharguy.infinitepodcast.handlers.mappers
+package com.zharguy.infinitepodcast.services.mappers
 
 import com.zharguy.infinitepodcast.common.mappers.UtilMappers
 import com.zharguy.infinitepodcast.repos.models.CharacterType
@@ -9,16 +9,16 @@ import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
 import com.zharguy.infinitepodcast.services.models.ScriptGuestCharacterModel
 import com.zharguy.infinitepodcast.services.models.ScriptModel
 import com.zharguy.infinitepodcast.services.models.UserModel
-import com.zharguy.protos.scripts.ScriptContentLine
-import com.zharguy.protos.scripts.ScriptGuestCharacter
 import org.mapstruct.*
 import org.mapstruct.factory.Mappers
-import com.zharguy.protos.common.ExtUserSource as ExtUserSourceProto
-import com.zharguy.protos.common.User as UserProto
-import com.zharguy.protos.scripts.CharacterType as CharacterTypeProto
-import com.zharguy.protos.scripts.Script as ScriptProto
-import com.zharguy.protos.scripts.ScriptType as ScriptTypeProto
-import com.zharguy.protos.scripts.SpeakerVoiceType as SpeakerVoiceTypeProto
+import build.buf.gen.com.zharguy.protos.scripts.enums.v1.CharacterType as CharacterTypeProto
+import build.buf.gen.com.zharguy.protos.scripts.enums.v1.ExtUserSource as ExtUserSourceProto
+import build.buf.gen.com.zharguy.protos.scripts.enums.v1.ScriptType as ScriptTypeProto
+import build.buf.gen.com.zharguy.protos.scripts.enums.v1.SpeakerVoiceType as SpeakerVoiceTypeProto
+import build.buf.gen.com.zharguy.protos.scripts.models.v1.Script as ScriptProto
+import build.buf.gen.com.zharguy.protos.scripts.models.v1.ScriptContentLine as ScriptContentLineProto
+import build.buf.gen.com.zharguy.protos.scripts.models.v1.ScriptGuestCharacter as ScriptGuestCharacterProto
+import build.buf.gen.com.zharguy.protos.scripts.models.v1.User as UserProto
 
 @Mapper(
     uses = [UtilMappers::class],
@@ -71,11 +71,11 @@ abstract class ApiMappers {
     abstract fun toModel(proto: UserProto): UserModel
     abstract fun toProto(model: UserModel): UserProto
 
-    abstract fun toModel(proto: ScriptGuestCharacter): ScriptGuestCharacterModel
-    abstract fun toProto(model: ScriptGuestCharacterModel): ScriptGuestCharacter
+    abstract fun toModel(proto: ScriptGuestCharacterProto): ScriptGuestCharacterModel
+    abstract fun toProto(model: ScriptGuestCharacterModel): ScriptGuestCharacterProto
 
-    abstract fun toModel(proto: ScriptContentLine): ScriptContentLineModel
-    abstract fun toProto(model: ScriptContentLineModel): ScriptContentLine
+    abstract fun toModel(proto: ScriptContentLineProto): ScriptContentLineModel
+    abstract fun toProto(model: ScriptContentLineModel): ScriptContentLineProto
 
     abstract fun toModel(proto: ScriptProto): ScriptModel
     abstract fun toProto(model: ScriptModel): ScriptProto
@@ -101,9 +101,13 @@ abstract class ApiMappers {
 
 private val mapper: ApiMappers = Mappers.getMapper(ApiMappers::class.java)
 
+fun ScriptType.toProto(): ScriptTypeProto = mapper.toProto(this)
+
 fun UserProto.toUserModel(): UserModel = mapper.toModel(this)
 
 fun UserModel.toProto(): UserProto = mapper.toProto(this)
+
+fun ScriptGuestCharacterModel.toProto(): ScriptGuestCharacterProto = mapper.toProto(this)
 
 fun ScriptProto.toScriptModel(): ScriptModel = mapper.toModel(this)
 

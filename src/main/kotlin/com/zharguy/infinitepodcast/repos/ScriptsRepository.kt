@@ -53,6 +53,14 @@ class ScriptsRepository {
         return retrieveScriptById(requireNotNull(script.id))
     }
 
+    fun updateScriptAudio(script: ScriptDataModel): ScriptDataModel {
+        retrieveScriptById(requireNotNull(script.id))
+        Scripts.update({ Scripts.id eq script.id }) {
+            it[characterVoiceMapping] = script.characterVoiceMapping
+        }
+        return retrieveScriptById(requireNotNull(script.id))
+    }
+
     fun retrieveScriptById(scriptId: UUID): ScriptDataModel {
         return (Scripts innerJoin Users).selectAll().where { (Scripts.id eq scriptId) }.forUpdate()
             .map {

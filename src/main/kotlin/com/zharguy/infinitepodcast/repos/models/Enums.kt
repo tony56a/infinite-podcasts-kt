@@ -24,6 +24,16 @@ enum class SpeakerVoiceType {
 }
 
 enum class ScriptStatus {
+    /** Contents haven't been generated yet for the script */
     PENDING,
-    GENERATED
+
+    /** Contents have been generated, but script hasn't been published to the queue */
+    GENERATED,
+
+    /** Contents have been published to downstream queues */
+    PUBLISHED,
+}
+
+enum class AudioSource {
+    MIMIC3
 }

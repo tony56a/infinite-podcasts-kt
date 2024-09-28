@@ -1,10 +1,9 @@
 package com.zharguy.infinitepodcast.repos.tables
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.zharguy.infinitepodcast.repos.models.*
-import jakarta.inject.Inject
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
@@ -15,6 +14,8 @@ import java.time.OffsetDateTime
 import java.util.*
 
 private val mapper = jacksonObjectMapper()
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
 
 object Scripts : UUIDTable("scripts") {
     val requestId: Column<UUID> = uuid("request_id")
@@ -30,6 +31,9 @@ object Scripts : UUIDTable("scripts") {
     val scriptLines: Column<List<ScriptContentLineDataModel>?> = jsonb("script_lines",
         { mapper.writeValueAsString(it) },
         { mapper.readValue<List<ScriptContentLineDataModel>>(it) }).nullable()
+    val characterVoiceMapping: Column<Map<String, ScriptCharacterAudioDataModel>?> = jsonb("script_audio_info",
+        { mapper.writeValueAsString(it) },
+        { mapper.readValue<Map<String, ScriptCharacterAudioDataModel>>(it) }).nullable()
 }
 
 fun ResultRow.toScriptDataModel(requestingUser: UserDataModel): ScriptDataModel {
@@ -43,6 +47,7 @@ fun ResultRow.toScriptDataModel(requestingUser: UserDataModel): ScriptDataModel 
         characters = this[Scripts.characters],
         scriptLines = this[Scripts.scriptLines],
         requestId = this[Scripts.requestId],
-        status = this[Scripts.status]
+        status = this[Scripts.status],
+        characterVoiceMapping = this[Scripts.characterVoiceMapping]
     )
 }

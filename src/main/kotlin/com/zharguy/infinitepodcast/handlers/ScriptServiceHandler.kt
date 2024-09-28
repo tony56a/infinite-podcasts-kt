@@ -1,9 +1,9 @@
 package com.zharguy.infinitepodcast.handlers
 
-import com.zharguy.infinitepodcast.handlers.mappers.toProto
-import com.zharguy.infinitepodcast.handlers.mappers.toScriptModel
+import build.buf.gen.com.zharguy.protos.scripts.v1.*
 import com.zharguy.infinitepodcast.services.ScriptService
-import com.zharguy.protos.scripts.*
+import com.zharguy.infinitepodcast.services.mappers.toProto
+import com.zharguy.infinitepodcast.services.mappers.toScriptModel
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import net.logstash.logback.argument.StructuredArguments.kv
@@ -20,7 +20,7 @@ class ScriptServiceHandler : ScriptServiceGrpcKt.ScriptServiceCoroutineImplBase(
     @Inject
     lateinit var scriptService: ScriptService
 
-    override suspend fun createScript(request: CreateScriptRequest): Script {
+    override suspend fun createScript(request: CreateScriptRequest): CreateScriptResponse {
 
         logger.info("Handling createScript", kv("request_id", request.script.requestId))
 
@@ -29,30 +29,36 @@ class ScriptServiceHandler : ScriptServiceGrpcKt.ScriptServiceCoroutineImplBase(
 
             val scriptModel = scriptService.addScript(script.toScriptModel())
 
-            scriptModel.toProto()
+            createScriptResponse {
+                this.script = scriptModel.toProto()
+            }
         } catch (e: Throwable) {
             logger.error("error", kv("exception", e))
             throw e
         }
     }
 
-    override suspend fun generateScript(request: GenerateScriptRequest): Script {
+    override suspend fun generateScript(request: GenerateScriptRequest): GenerateScriptResponse {
         logger.info("Handling generateScript", kv("script_id", request.id))
 
         return try {
             val scriptModel = scriptService.generateScript(UUID.fromString(request.id))
 
-            scriptModel.toProto()
+            generateScriptResponse {
+                this.script = scriptModel.toProto()
+            }
         } catch (e: Throwable) {
             logger.error("error", kv("exception", e))
             throw e
         }
     }
 
-    override suspend fun getScript(request: GetScriptRequest): Script {
+    override suspend fun getScript(request: GetScriptRequest): GetScriptResponse {
         return try {
             val scriptModel = scriptService.getScript(UUID.fromString(request.id))
-            scriptModel.toProto()
+            getScriptResponse {
+                this.script = scriptModel.toProto()
+            }
         } catch (e: Throwable) {
             logger.error("error", kv("exception", e))
             throw e

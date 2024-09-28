@@ -1,6 +1,6 @@
 package com.zharguy.infinitepodcast.events.mappers
 
-import com.zharguy.protos.scripts.GenerateScriptEvent
+import build.buf.gen.com.zharguy.protos.scripts.events.v1.GenerateScriptEvent
 import io.micronaut.core.type.Argument
 import io.micronaut.rabbitmq.bind.RabbitConsumerState
 import io.micronaut.rabbitmq.intercept.MutableBasicProperties

@@ -2,17 +2,12 @@ package com.zharguy.infinitepodcast.events
 
 import com.rabbitmq.client.BuiltinExchangeType
 import com.rabbitmq.client.Channel
-import com.zharguy.infinitepodcast.events.EventsChannelConstants.SCRIPT_PROCESSING_QUEUE_KEY
-import com.zharguy.infinitepodcast.events.EventsChannelConstants.SCRIPT_PROCESSING_QUEUE_NAME
-import com.zharguy.infinitepodcast.events.EventsChannelConstants.SVC_EXCHANGE_NAME
+import com.zharguy.infinitepodcast.events.QueueChannelConstants.SCRIPT_PROCESSING_QUEUE_KEY
+import com.zharguy.infinitepodcast.events.QueueChannelConstants.SCRIPT_PROCESSING_QUEUE_NAME
+import com.zharguy.infinitepodcast.events.QueueChannelConstants.SVC_EXCHANGE_NAME
 import io.micronaut.rabbitmq.connect.ChannelInitializer
 import jakarta.inject.Singleton
 
-object EventsChannelConstants {
-    const val SVC_EXCHANGE_NAME = "script_svc_exchange"
-    const val SCRIPT_PROCESSING_QUEUE_NAME = "script_processing.queue"
-    const val SCRIPT_PROCESSING_QUEUE_KEY = "script_processing"
-}
 
 @Singleton
 class ChannelPoolListener : ChannelInitializer() {
