@@ -2,7 +2,7 @@ package com.zharguy.infinitepodcast.services
 
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.CharacterState
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.ScriptCameraPosition
-import build.buf.gen.com.zharguy.protos.scripts.events.v1.GenerateScriptEvent
+import build.buf.gen.com.zharguy.protos.scripts.events.v1.generateScriptEvent
 import build.buf.gen.com.zharguy.protos.scripts.events.v1.showScriptEvent
 import build.buf.gen.com.zharguy.protos.scripts.models.v1.ShowScriptLine
 import build.buf.gen.com.zharguy.protos.scripts.models.v1.showScriptLine
@@ -78,7 +78,9 @@ class ScriptService {
         } else {
             logger.info("publishing event processing script", *persistedScript.getLoggerArgs())
             generateEventPublisher.send(
-                GenerateScriptEvent.newBuilder().setId(persistedScript.id.toString()).build()
+                generateScriptEvent {
+                    this.id = persistedScript.id.toString()
+                }
             )
             persistedScript
         }

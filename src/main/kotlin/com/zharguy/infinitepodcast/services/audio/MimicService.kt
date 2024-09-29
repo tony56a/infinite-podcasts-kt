@@ -39,7 +39,7 @@ class MimicService : TtsService {
                         )
                         Pair(scriptLine, audio)
                     }
-                }.awaitAll().toMap() ?: emptyMap()
+                }.awaitAll().toMap()
             }
 
         } catch (e: HttpClientException) {

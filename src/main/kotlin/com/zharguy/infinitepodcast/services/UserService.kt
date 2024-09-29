@@ -2,6 +2,7 @@ package com.zharguy.infinitepodcast.services
 
 import com.zharguy.infinitepodcast.repos.UsersRepository
 import com.zharguy.infinitepodcast.repos.dbQuery
+import com.zharguy.infinitepodcast.repos.models.ExtUserSource
 import com.zharguy.infinitepodcast.services.mappers.fromDataModel
 import com.zharguy.infinitepodcast.services.mappers.toDataModel
 import com.zharguy.infinitepodcast.services.models.UserModel
@@ -25,6 +26,13 @@ class UserService {
     suspend fun retrieveUser(userId: UUID): UserModel {
         val userDataModel = dbQuery {
             usersRepository.retrieveUserById(userId)
+        }
+        return userDataModel.fromDataModel()
+    }
+
+    suspend fun retrieveUserByExtId(extUserId: String, extUserSource: ExtUserSource): UserModel {
+        val userDataModel = dbQuery {
+            usersRepository.retrieveUserByExtId(extUserId, extUserSource)
         }
         return userDataModel.fromDataModel()
     }

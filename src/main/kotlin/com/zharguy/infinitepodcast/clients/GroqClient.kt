@@ -7,8 +7,9 @@ import io.micronaut.core.async.annotation.SingleResult
 import io.micronaut.http.MutableHttpRequest
 import io.micronaut.http.annotation.*
 import io.micronaut.http.client.annotation.Client
+import io.micronaut.retry.annotation.Retryable
 
-
+@Retryable(attempts = "3")
 @Client(id = "groq")
 interface GroqClient {
 

@@ -10,10 +10,10 @@ import jakarta.inject.Singleton
 class DisplayScriptPublisher {
 
     @Inject
-    lateinit var connection: StatefulRedisConnection<String, String>
+    lateinit var connection: StatefulRedisConnection<ByteArray, ByteArray>
 
     fun publish(scriptEvent: ShowScriptEvent, queueName: String) {
         val api = connection.sync()
-        api.lpush(queueName, JsonFormat.printer().print(scriptEvent))
+        api.lpush(queueName.toByteArray(), JsonFormat.printer().print(scriptEvent).toByteArray())
     }
 }

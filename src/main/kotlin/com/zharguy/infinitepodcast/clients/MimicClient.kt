@@ -5,7 +5,9 @@ import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Post
 import io.micronaut.http.annotation.QueryValue
 import io.micronaut.http.client.annotation.Client
+import io.micronaut.retry.annotation.Retryable
 
+@Retryable(attempts = "3")
 @Client(value = "mimic")
 interface MimicClient {
     @Post("/api/tts")
