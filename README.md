@@ -35,8 +35,8 @@ TODO
 * Docker image for main application
 * CI/CD to build/test image
 * Unit tests
-* gRPC error handling interceptor
-* Rate limiting
+* ~~gRPC error handling interceptor~~
+* ~~Rate limiting~~
     * Application layer, not in gRPC filter/interceptor though
 * metrics
 * authZ
