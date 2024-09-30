@@ -10,4 +10,6 @@ object QueueChannelConstants {
     const val FRONT_END_EXCHANGE_NAME = "fe_exchange"
     const val SCRIPT_DISPLAY_QUEUE_NAME = "script_display.queue"
     const val SCRIPT_DISPLAY_QUEUE_KEY = "script_display"
+    const val PRIORITY_SCRIPT_DISPLAY_QUEUE_NAME = "priority_script_display.queue"
+    const val PRIORITY_SCRIPT_DISPLAY_QUEUE_KEY = "priority_script_display"
 }

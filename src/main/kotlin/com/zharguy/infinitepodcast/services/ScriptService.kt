@@ -143,7 +143,10 @@ class ScriptService {
             this.requestingUser = script.requestingUser.toProto()
             this.lines.addAll(lines)
         }
-        displayScriptPublisher.publish(event, QueueChannelConstants.SCRIPT_DISPLAY_QUEUE_NAME)
+        val displayScriptQueue = when (script.requestingUser.userSource) {
+            else -> QueueChannelConstants.PRIORITY_SCRIPT_DISPLAY_QUEUE_NAME
+        }
+        displayScriptPublisher.publish(event, displayScriptQueue)
     }
 
     private suspend fun doGenerateScript(script: ScriptModel): ScriptModel {
