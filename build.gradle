@@ -87,5 +87,8 @@ micronaut {
     }
 }
 
+tasks.shadowJar {
+    archiveFileName.set("${project.name}-fat.jar")
+}
 
 

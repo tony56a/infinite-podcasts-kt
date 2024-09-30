@@ -5,6 +5,11 @@ services:
       - "6379:6379"
       - "8001:8001"
     restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 1s
+      timeout: 3s
+      retries: 20
   db:
     image: postgres:16-alpine
     volumes:
@@ -41,6 +46,11 @@ services:
     volumes:
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
+    healthcheck:
+      test: [ 'CMD', 'rabbitmq-diagnostics', 'check_port_connectivity' ]
+      interval: 1s
+      timeout: 3s
+      retries: 20
   tts:
     build:
       context: .
@@ -67,9 +77,13 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     depends_on:
-      - rabbitmq
-      - pgbouncer
-      - redis
-      - tts
+      rabbitmq:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      tts:
+        condition: service_started
     restart: on-failure
 
