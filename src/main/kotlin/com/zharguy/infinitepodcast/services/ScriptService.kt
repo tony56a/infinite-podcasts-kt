@@ -109,6 +109,7 @@ class ScriptService {
     }
 
     private fun doPublishScript(script: ScriptModel) {
+        logger.info("Publishing script", *script.getLoggerArgs())
         val lines: List<ShowScriptLine> = requireNotNull(script.scriptLines).mapIndexed { index, line ->
             val cameraPosition = when {
                 index >= script.scriptLines.size - 1 -> ScriptCameraPosition.SCRIPT_CAMERA_POSITION_SCENE_OVERVIEW

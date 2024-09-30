@@ -43,7 +43,7 @@ class MimicService : TtsService {
             }
 
         } catch (e: HttpClientException) {
-            logger.error("error during generation, returning empty list instead")
+            logger.error("Error during generation, returning empty list instead", e)
             emptyMap()
         }
     }

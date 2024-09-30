@@ -1,0 +1,26 @@
+micronaut:
+  http:
+    client:
+      pool:
+        enabled: true
+        max-concurrent-http1-connections: 50
+    services:
+      groq:
+        url: ${GROQ_URL:`https://api.groq.com`}
+      mimic:
+        url: ${MIMIC_URL:`http://localhost:59125`}
+database:
+  host: ${PGDB_HOST:localhost}
+  port: ${PGDB_PORT:5432}
+  db: ${PGDB_DB:postgres}
+  username: ${PGDB_USER:redacted}
+  password: ${PGDB_PASSWORD:redacted}
+groq:
+  apiKey: ${GROQ_API_KEY:redacted}
+redis:
+  uri: ${REDIS_URI:`redis://localhost`}
+rabbitmq:
+  host: ${RABBITMQ_HOST:localhost}
+  port: ${RABBITMQ_PORT:5672}
+  username: ${RABBITMQ_USER:redacted}
+  password: ${RABBITMQ_PASSWORD:redacted}

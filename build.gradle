@@ -19,8 +19,8 @@ repositories {
 }
 
 dependencies {
-    implementation("build.buf.gen:zharguy_scripts_grpc_kotlin:1.4.1.1.20240929051538.9c09a4f16169")
-    implementation("build.buf.gen:zharguy_scripts_protocolbuffers_kotlin:28.2.0.1.20240929051538.9c09a4f16169")
+    implementation("build.buf.gen:zharguy_scripts_grpc_kotlin:1.4.1.1.20240929052648.e1c2ea3f3fe8")
+    implementation("build.buf.gen:zharguy_scripts_protocolbuffers_kotlin:28.2.0.1.20240929052648.e1c2ea3f3fe8")
     implementation("com.bucket4j:bucket4j_jdk17-redis-common:8.14.0")
     implementation("com.bucket4j:bucket4j_jdk17-lettuce:8.14.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")

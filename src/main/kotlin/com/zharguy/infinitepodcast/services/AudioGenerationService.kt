@@ -107,7 +107,7 @@ class AudioGenerationService {
 
         if (scriptLineAudio.size != script.scriptLines.size) {
             logger.error("Audio was not generated for the script", *script.getLoggerArgs())
-            throw IllegalStateException("Audio was not generate")
+            throw RuntimeException("Audio was not generated")
         }
 
         return script.copy(

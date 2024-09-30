@@ -1,0 +1,75 @@
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    restart: on-failure
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - ./db_volume:/var/lib/postgresql/data
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=${PGDB_USER}
+      - POSTGRES_PASSWORD=${PGDB_PASSWORD}
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    environment:
+      - DB_USER=${PGDB_USER}
+      - DB_PASSWORD=${PGDB_PASSWORD}
+      - DB_HOST=db
+      - AUTH_TYPE=scram-sha-256 # remove/comment this line if using postgres:13 and lower
+      - POOL_MODE=transaction
+      - ADMIN_USERS=${PGDB_USER},dbuser
+    ports:
+      - "5432:5432"
+    depends_on:
+      - db
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-h', 'localhost' ]
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    volumes:
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/var/log/rabbitmq
+  tts:
+    build:
+      context: .
+      dockerfile: ./tts/tts-service.dockerfile
+    ports:
+      - "59125:59125"
+    volumes:
+      - ./tts/mimic3/:/home/mimic3/.local/share/mycroft/mimic3
+    restart: on-failure
+  service:
+    profiles:
+      - service
+    image: infinite-podcast-kt:latest
+    ports:
+      - "50051:50051"
+    environment:
+      - MIMIC_URL=http://tts:59125
+      - PGDB_HOST=pgbouncer
+      - PGDB_USER=${PGDB_USER}
+      - PGDB_PASSWORD=${PGDB_PASSWORD}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - REDIS_URI=redis://redis
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+    depends_on:
+      - rabbitmq
+      - pgbouncer
+      - redis
+      - tts
+    restart: on-failure
+
