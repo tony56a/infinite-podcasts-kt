@@ -27,6 +27,7 @@ jobs:
       - name: Build and push Docker Image
         uses: docker/build-push-action@v6
         with:
+          context: .
           push: true
           tags: tony56a/infinite-podcasts-kt:latest
       - name: Upload build artifacts
