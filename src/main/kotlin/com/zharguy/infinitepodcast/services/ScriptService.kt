@@ -12,6 +12,7 @@ import com.zharguy.infinitepodcast.events.publishers.DisplayScriptPublisher
 import com.zharguy.infinitepodcast.events.publishers.GenerateScriptPublisher
 import com.zharguy.infinitepodcast.repos.ScriptsRepository
 import com.zharguy.infinitepodcast.repos.dbQuery
+import com.zharguy.infinitepodcast.repos.models.ExtUserSource
 import com.zharguy.infinitepodcast.repos.models.ScriptStatus
 import com.zharguy.infinitepodcast.services.mappers.fromDataModel
 import com.zharguy.infinitepodcast.services.mappers.toDataModel
@@ -144,6 +145,7 @@ class ScriptService {
             this.lines.addAll(lines)
         }
         val displayScriptQueue = when (script.requestingUser.userSource) {
+            ExtUserSource.AUTOMATION -> QueueChannelConstants.SCRIPT_DISPLAY_QUEUE_NAME
             else -> QueueChannelConstants.PRIORITY_SCRIPT_DISPLAY_QUEUE_NAME
         }
         displayScriptPublisher.publish(event, displayScriptQueue)

@@ -10,6 +10,7 @@ enum class ExtUserSource {
     ADMIN,
     DISCORD,
     TWITCH,
+    AUTOMATION,
 }
 
 enum class CharacterType {
