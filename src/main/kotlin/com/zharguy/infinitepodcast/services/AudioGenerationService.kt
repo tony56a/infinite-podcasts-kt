@@ -105,7 +105,7 @@ class AudioGenerationService {
         }.flatMap { map -> map.entries }
             .associate(Map.Entry<ScriptContentLineModel, ByteArray>::toPair)
 
-        if (scriptLineAudio.size != script.scriptLines.size) {
+        if (scriptLineAudio.isEmpty()) {
             logger.error("Audio was not generated for the script", *script.getLoggerArgs())
             throw RuntimeException("Audio was not generated")
         }

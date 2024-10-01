@@ -10,6 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import net.logstash.logback.argument.StructuredArguments.kv
 import org.slf4j.LoggerFactory
 
@@ -28,19 +31,23 @@ class MimicService : TtsService {
     ): Map<ScriptContentLineModel, ByteArray> {
 
         return try {
-            coroutineScope {
-                scriptLines.map { scriptLine ->
-                    val speakerVoiceInfo = characterVoiceMap.getValue(scriptLine.speaker)
-                    async(Dispatchers.IO) {
-                        logger.info("Making request for line", kv("line", scriptLine.content))
-                        val audio = mimicClient.chatCompletion(
-                            voice = speakerVoiceInfo.voiceType, lengthScale = speakerVoiceInfo.voiceSpeedMultiplier,
-                            request = scriptLine.content
-                        )
-                        Pair(scriptLine, audio)
-                    }
-                }.awaitAll().toMap()
-            }
+            scriptLines.toSet().chunked(4).asFlow().map { chunk ->
+                coroutineScope {
+                    chunk.map { scriptLine ->
+                        val speakerVoiceInfo = characterVoiceMap.getValue(scriptLine.speaker)
+                        async(Dispatchers.IO) {
+                            logger.info("Making request for line", kv("line", scriptLine.content))
+                            val audio = mimicClient.chatCompletion(
+                                voice = speakerVoiceInfo.voiceType, lengthScale = speakerVoiceInfo.voiceSpeedMultiplier,
+                                request = scriptLine.content
+                            )
+                            Pair(scriptLine, audio)
+                        }
+                    }.awaitAll().toMap()
+                }
+            }.toList().flatMap { it.entries }
+                .associate { it.key to it.value }
+
 
         } catch (e: HttpClientException) {
             logger.error("Error during generation, returning empty list instead", e)
