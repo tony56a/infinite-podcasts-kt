@@ -20,7 +20,7 @@ class RateLimiterService {
     lateinit var defaultPolicy: BucketConfiguration
 
     fun checkLimit(userExtId: String, userSource: ExtUserSource, method: String): Boolean {
-        if (userSource == ExtUserSource.ADMIN) {
+        if (userSource == ExtUserSource.ADMIN || userSource == ExtUserSource.AUTOMATION) {
             return true
         }
         val bucket: Bucket =

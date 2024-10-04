@@ -1,0 +1,77 @@
+﻿tts-1:
+  jwk:
+    model: voices/en_US-arctic-medium.onnx
+    speaker: 8
+  fem:
+    model: voices/en_US-arctic-medium.onnx
+    speaker: 10
+  p279:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 4
+  p259:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 69
+  p247:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 5
+  p263:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 7
+  p274:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 10
+  p360:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 24
+  p374:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 25
+  p376:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 26
+  p275:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 55
+  p292:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 61
+  p226:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 95
+  p278:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 64
+
+  p299:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 68
+  p236:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 1
+  p250:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 3
+  p261:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 6
+  p283:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 8
+  p361:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 22
+  p310:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 27
+  p340:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 30
+  p230:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 74
+  p294:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 39
+  p295:
+    model: voices/en_GB-vctk-medium.onnx
+    speaker: 56
