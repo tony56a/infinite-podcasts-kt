@@ -1,5 +1,6 @@
 package com.zharguy.infinitepodcast.services.llm
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -57,11 +58,12 @@ class GroqService : LlmService {
                 objectMapper.readTree(rawScript).get("lines") ?: throw JsonMappingException("lines are not found")
             val lines = objectMapper.treeToValue<List<ScriptContentLineModel>>(node)
             Pair(lines, listOf(character))
-        } catch (e: JsonMappingException) {
+        } catch (e: JsonParseException) {
             logger.error(
                 "encountered exception when parsing LLM response",
                 kv("script_id", inputScript.id),
-                kv("exception", e.message)
+                kv("exception", e.message),
+                kv("payload", e.originalMessage)
             )
             throw RuntimeException(e)
         }

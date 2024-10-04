@@ -9,10 +9,10 @@ import io.micronaut.http.annotation.*
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.retry.annotation.Retryable
 
-@Retryable(attempts = "3")
 @Client(id = "groq")
 interface GroqClient {
 
+    @Retryable(attempts = "3")
     @Post("/openai/v1/chat/completions")
     @SingleResult
     fun chatCompletion(@Body request: ChatCompletionRequest): ChatCompletion

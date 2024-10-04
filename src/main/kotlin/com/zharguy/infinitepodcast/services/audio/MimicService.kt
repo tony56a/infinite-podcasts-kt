@@ -5,6 +5,7 @@ import com.zharguy.infinitepodcast.services.models.ScriptCharacterAudioModel
 import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
 import io.micronaut.http.client.exceptions.HttpClientException
 import jakarta.inject.Inject
+import jakarta.inject.Named
 import jakarta.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -17,6 +18,7 @@ import net.logstash.logback.argument.StructuredArguments.kv
 import org.slf4j.LoggerFactory
 
 @Singleton
+@Named("mimic")
 class MimicService : TtsService {
     companion object {
         private val logger = LoggerFactory.getLogger(MimicService::class.java)
@@ -29,7 +31,6 @@ class MimicService : TtsService {
         scriptLines: List<ScriptContentLineModel>,
         characterVoiceMap: Map<String, ScriptCharacterAudioModel>
     ): Map<ScriptContentLineModel, ByteArray> {
-
         return try {
             scriptLines.toSet().chunked(4).asFlow().map { chunk ->
                 coroutineScope {
