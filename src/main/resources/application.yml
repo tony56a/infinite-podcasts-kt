@@ -9,6 +9,8 @@ micronaut:
         url: ${GROQ_URL:`https://api.groq.com`}
       mimic:
         url: ${MIMIC_URL:`http://localhost:59125`}
+      openedai:
+        url: ${OPENEDAI_URL:`http://localhost:8000`}
 database:
   host: ${PGDB_HOST:localhost}
   port: ${PGDB_PORT:5432}

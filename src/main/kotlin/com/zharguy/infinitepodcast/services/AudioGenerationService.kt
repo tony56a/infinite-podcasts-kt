@@ -3,6 +3,8 @@ package com.zharguy.infinitepodcast.services
 import com.zharguy.infinitepodcast.repos.models.AudioSource
 import com.zharguy.infinitepodcast.repos.models.CharacterType
 import com.zharguy.infinitepodcast.repos.models.SpeakerVoiceType
+import com.zharguy.infinitepodcast.services.audio.MimicService
+import com.zharguy.infinitepodcast.services.audio.OpenedAiService
 import com.zharguy.infinitepodcast.services.audio.TtsService
 import com.zharguy.infinitepodcast.services.models.ScriptCharacterAudioModel
 import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
@@ -21,72 +23,75 @@ class AudioGenerationService {
 
     val maleVoices: List<ScriptCharacterAudioModel> = listOf(
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p259",
-            voiceSpeedMultiplier = 1.2,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p259",
+            voiceSpeedMultiplier = 0.8,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p279",
-            voiceSpeedMultiplier = 1.55,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p279",
+            voiceSpeedMultiplier = 0.65,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p247",
-            voiceSpeedMultiplier = 1.2,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p247",
+            voiceSpeedMultiplier = 0.8,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p263",
-            voiceSpeedMultiplier = 1.2,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p263",
+            voiceSpeedMultiplier = 0.8,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p274",
-            voiceSpeedMultiplier = 1.2,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p274",
+            voiceSpeedMultiplier = 0.8,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p360",
-            voiceSpeedMultiplier = 1.2,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p360",
+            voiceSpeedMultiplier = 0.8,
+            audioSource = AudioSource.OPENEDAI
         ),
     )
 
     val femaleVoices: List<ScriptCharacterAudioModel> = listOf(
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p299",
-            voiceSpeedMultiplier = 1.55,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p299",
+            voiceSpeedMultiplier = 0.65,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p236",
-            voiceSpeedMultiplier = 1.4,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p236",
+            voiceSpeedMultiplier = 0.715,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p250",
-            voiceSpeedMultiplier = 1.55,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p250",
+            voiceSpeedMultiplier = 0.65,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p261",
-            voiceSpeedMultiplier = 1.2,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p261",
+            voiceSpeedMultiplier = 0.75,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p283",
-            voiceSpeedMultiplier = 1.4,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p283",
+            voiceSpeedMultiplier = 0.715,
+            audioSource = AudioSource.OPENEDAI
         ),
         ScriptCharacterAudioModel(
-            voiceType = "en_US/vctk_low#p361",
-            voiceSpeedMultiplier = 1.25,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "p361",
+            voiceSpeedMultiplier = 0.8,
+            audioSource = AudioSource.OPENEDAI
         ),
     )
 
     @Inject
-    lateinit var mimicService: TtsService
+    lateinit var mimicService: MimicService
+
+    @Inject
+    lateinit var openedAiService: OpenedAiService
 
     suspend fun generateAudioForScript(script: ScriptModel): ScriptModel {
         logger.info("Generating audio for script", *script.getLoggerArgs())
@@ -149,23 +154,24 @@ class AudioGenerationService {
     private fun getTtsVoiceService(scriptCharacterAudioModel: ScriptCharacterAudioModel): TtsService {
         return when (scriptCharacterAudioModel.audioSource) {
             AudioSource.MIMIC3 -> mimicService
+            AudioSource.OPENEDAI -> openedAiService
         }
     }
 
     private fun getHostVoice(): ScriptCharacterAudioModel {
         return ScriptCharacterAudioModel(
-            voiceType = "en_US/cmu-arctic_low#jmk",
-            voiceSpeedMultiplier = 1.18,
-            audioSource = AudioSource.MIMIC3
+            voiceType = "jwk",
+            voiceSpeedMultiplier = 0.85,
+            audioSource = AudioSource.OPENEDAI
         )
     }
 
     private fun getGuestVoice(guestCharacter: ScriptGuestCharacterModel): ScriptCharacterAudioModel {
         if (guestCharacter.characterType == CharacterType.ROBOT) {
             return ScriptCharacterAudioModel(
-                voiceType = "en_US/cmu-arctic_low#fem",
-                voiceSpeedMultiplier = 1.1,
-                audioSource = AudioSource.MIMIC3
+                voiceType = "fem",
+                voiceSpeedMultiplier = 0.9,
+                audioSource = AudioSource.OPENEDAI
             )
         }
 
