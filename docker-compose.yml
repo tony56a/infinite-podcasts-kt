@@ -51,23 +51,14 @@ services:
       interval: 1s
       timeout: 3s
       retries: 20
-  tts:
-    build:
-      context: .
-      dockerfile: ./tts/tts-service.dockerfile
-    ports:
-      - "59125:59125"
-    volumes:
-      - ./tts/mimic3/:/home/mimic3/.local/share/mycroft/mimic3
-    restart: on-failure
   service:
     profiles:
       - service
-    image: infinite-podcast-kt:latest
+    image: tony56a/infinite-podcasts-kt:latest
     ports:
       - "50051:50051"
     environment:
-      - MIMIC_URL=http://tts:59125
+      - OPENEDAI_URL=http://tts:8000
       - PGDB_HOST=pgbouncer
       - PGDB_USER=${PGDB_USER}
       - PGDB_PASSWORD=${PGDB_PASSWORD}
@@ -86,4 +77,14 @@ services:
       tts:
         condition: service_started
     restart: on-failure
-
+  tts:
+    build:
+      context: .
+      dockerfile: tts/tts-service.dockerfile
+    env_file: tts/tts.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./tts/config:/app/config
+    # To install as a service
+    restart: unless-stopped
