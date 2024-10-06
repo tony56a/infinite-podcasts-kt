@@ -15,4 +15,5 @@ data class ScriptDataModel(
     val characters: List<ScriptGuestCharacterDataModel>? = null,
     val scriptLines: List<ScriptContentLineDataModel>? = null,
     val characterVoiceMapping: Map<String, ScriptCharacterAudioDataModel>? = null,
+    val promptTemplateId: UUID? = null,
 )

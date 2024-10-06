@@ -42,7 +42,8 @@ class ScriptGenService {
         return request.copy(
             scriptLines = generatedLines,
             characters = characters,
-            status = ScriptStatus.GENERATED
+            status = ScriptStatus.GENERATED,
+            promptTemplateId = promptTemplate.id
         )
     }
 

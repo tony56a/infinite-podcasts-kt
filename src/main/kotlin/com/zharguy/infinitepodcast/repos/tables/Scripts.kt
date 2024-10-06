@@ -34,6 +34,7 @@ object Scripts : UUIDTable("scripts") {
     val characterVoiceMapping: Column<Map<String, ScriptCharacterAudioDataModel>?> = jsonb("script_audio_info",
         { mapper.writeValueAsString(it) },
         { mapper.readValue<Map<String, ScriptCharacterAudioDataModel>>(it) }).nullable()
+    val promptTemplate: Column<EntityID<UUID>?> = reference("prompt_template_id", PromptTemplates).nullable()
 }
 
 fun ResultRow.toScriptDataModel(requestingUser: UserDataModel): ScriptDataModel {

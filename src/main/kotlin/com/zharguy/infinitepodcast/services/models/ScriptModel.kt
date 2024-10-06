@@ -20,6 +20,7 @@ data class ScriptModel(
     val scriptLines: List<ScriptContentLineModel>? = null,
     val characterVoiceMapping: Map<String, ScriptCharacterAudioModel>? = null,
     val scriptLineAudio: Map<ScriptContentLineModel, ByteArray>? = null,
+    val promptTemplateId: UUID? = null,
 ) {
     fun getLoggerArgs(): Array<StructuredArgument> = arrayOf(
         kv("script_id", this.id),

@@ -1,10 +1,7 @@
 package com.zharguy.infinitepodcast.repos
 
 import com.zharguy.infinitepodcast.repos.models.ScriptDataModel
-import com.zharguy.infinitepodcast.repos.tables.Scripts
-import com.zharguy.infinitepodcast.repos.tables.Users
-import com.zharguy.infinitepodcast.repos.tables.toScriptDataModel
-import com.zharguy.infinitepodcast.repos.tables.toUserDataModel
+import com.zharguy.infinitepodcast.repos.tables.*
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.jetbrains.exposed.dao.id.EntityID
@@ -44,11 +41,14 @@ class ScriptsRepository {
 
     fun updateScriptContent(script: ScriptDataModel): ScriptDataModel {
         retrieveScriptById(requireNotNull(script.id))
-        Scripts.update({ Scripts.id eq script.id }) {
-            it[characters] = script.characters
-            it[scriptLines] = script.scriptLines
-            it[fulfilledAt] = OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
-            it[status] = script.status
+        Scripts.update({ Scripts.id eq script.id }) { query ->
+            query[characters] = script.characters
+            query[scriptLines] = script.scriptLines
+            query[fulfilledAt] = OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC)
+            query[status] = script.status
+            script.promptTemplateId?.let {
+                query[promptTemplate] = EntityID(script.promptTemplateId, PromptTemplates)
+            }
         }
         return retrieveScriptById(requireNotNull(script.id))
     }

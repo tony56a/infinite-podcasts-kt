@@ -110,14 +110,14 @@ class ScriptService {
     private fun doPublishScript(script: ScriptModel) {
         logger.info("Publishing script", *script.getLoggerArgs())
         val lines: List<ShowScriptLine> = requireNotNull(script.scriptLines).mapIndexed { index, line ->
+            val cleanedSpeakerName = line.speaker.lowercase()
             val cameraPosition = when {
                 index >= script.scriptLines.size - 1 -> ScriptCameraPosition.SCRIPT_CAMERA_POSITION_SCENE_OVERVIEW
-                line.speaker.contains("poe") || line.speaker.contains("host") ->
+                cleanedSpeakerName.contains("poe") || cleanedSpeakerName.contains("host") ->
                     ScriptCameraPosition.SCRIPT_CAMERA_POSITION_HOST
 
                 else -> ScriptCameraPosition.SCRIPT_CAMERA_POSITION_GUEST
             }
-            val cleanedSpeakerName = line.speaker.lowercase()
             val (hostState, guestState) = when {
                 cleanedSpeakerName.contains("poe") || cleanedSpeakerName.contains("host") ->
                     Pair(CharacterState.CHARACTER_STATE_SPEAKING, CharacterState.CHARACTER_STATE_NEUTRAL)
