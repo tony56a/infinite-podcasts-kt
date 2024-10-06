@@ -4,6 +4,7 @@ import com.zharguy.infinitepodcast.clients.OpenedAiTtsClient
 import com.zharguy.infinitepodcast.clients.models.openedai.OpenedAiRequest
 import com.zharguy.infinitepodcast.services.models.ScriptCharacterAudioModel
 import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.micronaut.http.client.exceptions.HttpClientException
 import jakarta.inject.Inject
 import jakarta.inject.Named
@@ -16,15 +17,12 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import net.logstash.logback.argument.StructuredArguments.kv
-import org.slf4j.LoggerFactory
+
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 @Named("openedAi")
 class OpenedAiService : TtsService {
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(OpenedAiService::class.java)
-    }
 
     @Inject
     lateinit var client: OpenedAiTtsClient

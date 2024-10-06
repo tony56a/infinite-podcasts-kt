@@ -58,7 +58,7 @@ class PromptTemplateRepository {
             llmModel = llmModel,
             scriptType = scriptType
         )
-            ?: throw IllegalArgumentException("Not found for extId and source")
+            ?: throw IllegalArgumentException("Not found for llm model and script type")
     }
 
     private fun doRetrievePromptTemplateByLlmModelAndScriptType(
@@ -79,8 +79,8 @@ class PromptTemplateRepository {
             promptTemplateMaxQuery, JoinType.INNER
         ) {
             (PromptTemplates.llmModel eq promptTemplateMaxQuery[PromptTemplates.llmModel]) and
-                    (PromptTemplates.scriptType eq promptTemplateMaxQuery[PromptTemplates.scriptType])
-            (PromptTemplates.revision eq promptTemplateMaxQuery[version])
+                    (PromptTemplates.scriptType eq promptTemplateMaxQuery[PromptTemplates.scriptType]) and
+                    (PromptTemplates.revision eq promptTemplateMaxQuery[version])
         }.selectAll().where {
             (PromptTemplates.llmModel eq llmModel) and
                     (PromptTemplates.scriptType eq scriptType) and

@@ -1,14 +1,13 @@
 package com.zharguy.infinitepodcast.handlers
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.grpc.*
 import jakarta.inject.Singleton
-import org.slf4j.LoggerFactory
+
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 class ExceptionInterceptor : ServerInterceptor {
-    companion object {
-        private val logger = LoggerFactory.getLogger(ExceptionInterceptor::class.java)
-    }
 
     private class LoggingServerCallListener<ReqT>(
         delegate: ServerCall.Listener<ReqT>
@@ -18,7 +17,7 @@ class ExceptionInterceptor : ServerInterceptor {
             try {
                 super.onMessage(message)
             } catch (t: Throwable) {
-                logger.error("error handling message", t)
+                logger.error(t) { "error handling message" }
                 throw t
             }
         }

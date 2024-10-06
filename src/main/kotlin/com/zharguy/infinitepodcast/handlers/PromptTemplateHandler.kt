@@ -7,15 +7,14 @@ import build.buf.gen.com.zharguy.protos.scripts.v1.createTemplateResponse
 import com.zharguy.infinitepodcast.services.PromptTemplateService
 import com.zharguy.infinitepodcast.services.mappers.toPromptTemplateModel
 import com.zharguy.infinitepodcast.services.mappers.toProto
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.slf4j.LoggerFactory
+
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 class PromptTemplateHandler : TemplateServiceGrpcKt.TemplateServiceCoroutineImplBase() {
-    companion object {
-        private val logger = LoggerFactory.getLogger(PromptTemplateHandler::class.java)
-    }
 
     @Inject
     lateinit var promptTemplateService: PromptTemplateService

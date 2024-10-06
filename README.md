@@ -41,8 +41,8 @@ Perquisites:
 
 ## TODO
 
-* per-model logging tags
-* DB for versioned LLM prompts
+* ~~per-model logging tags~~
+* ~~DB for versioned LLM prompts~~
 * multiple LLM clients
 * ~~dynamic configuration files~~
 * object store for audio clips

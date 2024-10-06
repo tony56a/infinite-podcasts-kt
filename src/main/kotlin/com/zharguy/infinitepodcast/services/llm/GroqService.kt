@@ -14,19 +14,16 @@ import com.zharguy.infinitepodcast.services.mappers.toGroq
 import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
 import com.zharguy.infinitepodcast.services.models.ScriptGuestCharacterModel
 import com.zharguy.infinitepodcast.services.models.ScriptModel
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import net.logstash.logback.argument.StructuredArguments.kv
-import org.slf4j.LoggerFactory
 import java.util.*
+
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 class GroqService : LlmService {
-
-    companion object {
-        @JvmStatic
-        private val logger = LoggerFactory.getLogger(GroqService::class.java)
-    }
 
     @Inject
     lateinit var objectMapper: ObjectMapper
@@ -40,8 +37,6 @@ class GroqService : LlmService {
         promptMessage: String,
         llmModel: LlmModel
     ): Pair<List<ScriptContentLineModel>, List<ScriptGuestCharacterModel>> {
-
-
         val request = ChatCompletionRequest(
             model = llmModel.toGroq(),
             messages = listOf(

@@ -6,20 +6,19 @@ import com.zharguy.infinitepodcast.services.ScriptService
 import com.zharguy.infinitepodcast.services.mappers.toProto
 import com.zharguy.infinitepodcast.services.mappers.toScriptModel
 import com.zharguy.infinitepodcast.services.mappers.toUserModel
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import net.logstash.logback.argument.StructuredArguments.kv
-import org.slf4j.LoggerFactory
 import java.util.*
 
 const val CREATE_SCRIPT_METHOD_NAME = "createScript"
 const val GENERATE_SCRIPT_METHOD_NAME = "generateScript"
 
+private val logger = KotlinLogging.logger {}
+
 @Singleton
 class ScriptServiceHandler : ScriptServiceGrpcKt.ScriptServiceCoroutineImplBase() {
-    companion object {
-        private val logger = LoggerFactory.getLogger(ScriptServiceHandler::class.java)
-    }
 
     @Inject
     lateinit var rateLimiterService: RateLimiterService

@@ -10,16 +10,14 @@ import com.zharguy.infinitepodcast.services.models.ScriptCharacterAudioModel
 import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
 import com.zharguy.infinitepodcast.services.models.ScriptGuestCharacterModel
 import com.zharguy.infinitepodcast.services.models.ScriptModel
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import org.slf4j.LoggerFactory
 
+private val logger = KotlinLogging.logger {}
 
 @Singleton
 class AudioGenerationService {
-    companion object {
-        private val logger = LoggerFactory.getLogger(AudioGenerationService::class.java)
-    }
 
     val maleVoices: List<ScriptCharacterAudioModel> = listOf(
         ScriptCharacterAudioModel(
