@@ -1,20 +1,16 @@
 package com.zharguy.infinitepodcast.services.mappers
 
 import com.zharguy.infinitepodcast.common.mappers.UtilMappers
-import com.zharguy.infinitepodcast.repos.models.CharacterType
-import com.zharguy.infinitepodcast.repos.models.ExtUserSource
-import com.zharguy.infinitepodcast.repos.models.ScriptType
-import com.zharguy.infinitepodcast.repos.models.SpeakerVoiceType
-import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
-import com.zharguy.infinitepodcast.services.models.ScriptGuestCharacterModel
-import com.zharguy.infinitepodcast.services.models.ScriptModel
-import com.zharguy.infinitepodcast.services.models.UserModel
+import com.zharguy.infinitepodcast.repos.models.*
+import com.zharguy.infinitepodcast.services.models.*
 import org.mapstruct.*
 import org.mapstruct.factory.Mappers
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.CharacterType as CharacterTypeProto
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.ExtUserSource as ExtUserSourceProto
+import build.buf.gen.com.zharguy.protos.scripts.enums.v1.LLMModel as LLMModelProto
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.ScriptType as ScriptTypeProto
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.SpeakerVoiceType as SpeakerVoiceTypeProto
+import build.buf.gen.com.zharguy.protos.scripts.models.v1.PromptTemplate as PromptTemplateProto
 import build.buf.gen.com.zharguy.protos.scripts.models.v1.Script as ScriptProto
 import build.buf.gen.com.zharguy.protos.scripts.models.v1.ScriptContentLine as ScriptContentLineProto
 import build.buf.gen.com.zharguy.protos.scripts.models.v1.ScriptGuestCharacter as ScriptGuestCharacterProto
@@ -57,6 +53,15 @@ abstract class ApiMappers {
     @InheritInverseConfiguration
     abstract fun toProto(userSourceProto: CharacterType): CharacterTypeProto
 
+    @EnumMapping(
+        nameTransformationStrategy = MappingConstants.STRIP_PREFIX_TRANSFORMATION,
+        configuration = "LLM_MODEL_"
+    )
+    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
+    abstract fun toModel(llmModel: LLMModelProto): LlmModel
+
+    @InheritInverseConfiguration
+    abstract fun toProto(llmModel: LlmModel): LLMModelProto
 
     @EnumMapping(
         nameTransformationStrategy = MappingConstants.STRIP_PREFIX_TRANSFORMATION,
@@ -79,6 +84,13 @@ abstract class ApiMappers {
 
     abstract fun toModel(proto: ScriptProto): ScriptModel
     abstract fun toProto(model: ScriptModel): ScriptProto
+
+    @Mapping(source = "promptTemplate", target = "promptTemplateText")
+    abstract fun toModel(proto: PromptTemplateProto): PromptTemplateModel
+
+    @InheritInverseConfiguration
+    abstract fun toProto(model: PromptTemplateModel): PromptTemplateProto
+
 
     @AfterMapping
     fun mapCharacterLinesToProto(model: ScriptModel, @MappingTarget scriptProto: ScriptProto.Builder) {
@@ -112,3 +124,7 @@ fun ScriptGuestCharacterModel.toProto(): ScriptGuestCharacterProto = mapper.toPr
 fun ScriptProto.toScriptModel(): ScriptModel = mapper.toModel(this)
 
 fun ScriptModel.toProto(): ScriptProto = mapper.toProto(this)
+
+fun PromptTemplateProto.toPromptTemplateModel(): PromptTemplateModel = mapper.toModel(this)
+
+fun PromptTemplateModel.toProto(): PromptTemplateProto = mapper.toProto(this)

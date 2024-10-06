@@ -18,7 +18,7 @@ const val GENERATE_SCRIPT_METHOD_NAME = "generateScript"
 @Singleton
 class ScriptServiceHandler : ScriptServiceGrpcKt.ScriptServiceCoroutineImplBase() {
     companion object {
-        private val logger = LoggerFactory.getLogger(ScriptService::class.java)
+        private val logger = LoggerFactory.getLogger(ScriptServiceHandler::class.java)
     }
 
     @Inject

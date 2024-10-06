@@ -6,10 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.treeToValue
 import com.zharguy.infinitepodcast.clients.GroqClient
-import com.zharguy.infinitepodcast.clients.models.groq.ChatCompletionModel
 import com.zharguy.infinitepodcast.clients.models.groq.ChatCompletionRequest
 import com.zharguy.infinitepodcast.clients.models.groq.SystemChatCompletionMessage
 import com.zharguy.infinitepodcast.clients.models.groq.UserChatCompletionMessage
+import com.zharguy.infinitepodcast.repos.models.LlmModel
+import com.zharguy.infinitepodcast.services.mappers.toGroq
 import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
 import com.zharguy.infinitepodcast.services.models.ScriptGuestCharacterModel
 import com.zharguy.infinitepodcast.services.models.ScriptModel
@@ -27,8 +28,6 @@ class GroqService : LlmService {
         private val logger = LoggerFactory.getLogger(GroqService::class.java)
     }
 
-    val model: ChatCompletionModel = ChatCompletionModel.LLAMA32_90B
-
     @Inject
     lateinit var objectMapper: ObjectMapper
 
@@ -38,10 +37,13 @@ class GroqService : LlmService {
     override suspend fun performInference(
         inputScript: ScriptModel,
         systemMessage: String,
-        promptMessage: String
+        promptMessage: String,
+        llmModel: LlmModel
     ): Pair<List<ScriptContentLineModel>, List<ScriptGuestCharacterModel>> {
+
+
         val request = ChatCompletionRequest(
-            model = model,
+            model = llmModel.toGroq(),
             messages = listOf(
                 SystemChatCompletionMessage(systemMessage),
                 UserChatCompletionMessage(promptMessage)

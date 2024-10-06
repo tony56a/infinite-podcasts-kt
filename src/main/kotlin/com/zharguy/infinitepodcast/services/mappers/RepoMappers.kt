@@ -1,14 +1,8 @@
 package com.zharguy.infinitepodcast.services.mappers
 
 import com.zharguy.infinitepodcast.common.mappers.UtilMappers
-import com.zharguy.infinitepodcast.repos.models.ScriptContentLineDataModel
-import com.zharguy.infinitepodcast.repos.models.ScriptDataModel
-import com.zharguy.infinitepodcast.repos.models.ScriptGuestCharacterDataModel
-import com.zharguy.infinitepodcast.repos.models.UserDataModel
-import com.zharguy.infinitepodcast.services.models.ScriptContentLineModel
-import com.zharguy.infinitepodcast.services.models.ScriptGuestCharacterModel
-import com.zharguy.infinitepodcast.services.models.ScriptModel
-import com.zharguy.infinitepodcast.services.models.UserModel
+import com.zharguy.infinitepodcast.repos.models.*
+import com.zharguy.infinitepodcast.services.models.*
 import org.mapstruct.Mapper
 import org.mapstruct.factory.Mappers
 
@@ -30,6 +24,10 @@ interface ServiceMappers {
     fun toDataModel(scriptModel: ScriptGuestCharacterModel): ScriptGuestCharacterDataModel
 
     fun fromDataModel(userModel: ScriptGuestCharacterDataModel): ScriptGuestCharacterModel
+
+    fun toDataModel(promptTemplateModel: PromptTemplateModel): PromptTemplateDataModel
+
+    fun fromDataModel(promptTemplateDataModel: PromptTemplateDataModel): PromptTemplateModel
 }
 
 private val mapper: ServiceMappers = Mappers.getMapper(ServiceMappers::class.java)
@@ -41,3 +39,7 @@ fun UserDataModel.fromDataModel() = mapper.fromDataModel(this)
 fun ScriptModel.toDataModel() = mapper.toDataModel(this)
 
 fun ScriptDataModel.fromDataModel() = mapper.fromDataModel(this)
+
+fun PromptTemplateModel.toDataModel() = mapper.toDataModel(this)
+
+fun PromptTemplateDataModel.fromDataModel() = mapper.fromDataModel(this)

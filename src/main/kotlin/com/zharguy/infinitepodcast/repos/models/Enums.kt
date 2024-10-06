@@ -36,5 +36,14 @@ enum class ScriptStatus {
 }
 
 enum class AudioSource {
-    MIMIC3
+    MIMIC3,
+    OPENEDAI,
+}
+
+enum class LlmModel {
+    LLAMA32_90B,
+    LLAMA31_70B,
+    LLAMA31_8B,
+    LLAMA3_70B,
+    LLAMA3_8B,
 }
