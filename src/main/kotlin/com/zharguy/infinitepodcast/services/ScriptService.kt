@@ -119,8 +119,9 @@ class ScriptService {
 
                 else -> ScriptCameraPosition.SCRIPT_CAMERA_POSITION_GUEST
             }
+            val cleanedSpeakerName = line.speaker.lowercase()
             val (hostState, guestState) = when {
-                line.speaker.contains("poe") || line.speaker.contains("host") ->
+                cleanedSpeakerName.contains("poe") || cleanedSpeakerName.contains("host") ->
                     Pair(CharacterState.CHARACTER_STATE_SPEAKING, CharacterState.CHARACTER_STATE_NEUTRAL)
 
                 else ->
