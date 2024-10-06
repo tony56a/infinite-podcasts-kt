@@ -7,8 +7,8 @@ import com.zharguy.infinitepodcast.services.mappers.toProto
 import com.zharguy.infinitepodcast.services.mappers.toScriptModel
 import com.zharguy.infinitepodcast.services.mappers.toUserModel
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micronaut.grpc.annotation.GrpcService
 import jakarta.inject.Inject
-import jakarta.inject.Singleton
 import net.logstash.logback.argument.StructuredArguments.kv
 import java.util.*
 
@@ -17,7 +17,7 @@ const val GENERATE_SCRIPT_METHOD_NAME = "generateScript"
 
 private val logger = KotlinLogging.logger {}
 
-@Singleton
+@GrpcService
 class ScriptServiceHandler : ScriptServiceGrpcKt.ScriptServiceCoroutineImplBase() {
 
     @Inject

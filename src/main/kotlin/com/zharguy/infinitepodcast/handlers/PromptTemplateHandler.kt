@@ -8,12 +8,12 @@ import com.zharguy.infinitepodcast.services.PromptTemplateService
 import com.zharguy.infinitepodcast.services.mappers.toPromptTemplateModel
 import com.zharguy.infinitepodcast.services.mappers.toProto
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.micronaut.grpc.annotation.GrpcService
 import jakarta.inject.Inject
-import jakarta.inject.Singleton
 
 private val logger = KotlinLogging.logger {}
 
-@Singleton
+@GrpcService
 class PromptTemplateHandler : TemplateServiceGrpcKt.TemplateServiceCoroutineImplBase() {
 
     @Inject

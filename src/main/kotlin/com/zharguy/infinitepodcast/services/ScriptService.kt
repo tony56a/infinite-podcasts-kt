@@ -2,14 +2,19 @@ package com.zharguy.infinitepodcast.services
 
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.CharacterState
 import build.buf.gen.com.zharguy.protos.scripts.enums.v1.ScriptCameraPosition
+import build.buf.gen.com.zharguy.protos.scripts.enums.v1.ScriptGenerationStatus
+import build.buf.gen.com.zharguy.protos.scripts.events.v1.copy
 import build.buf.gen.com.zharguy.protos.scripts.events.v1.generateScriptEvent
+import build.buf.gen.com.zharguy.protos.scripts.events.v1.scriptGenerationStatusEvent
 import build.buf.gen.com.zharguy.protos.scripts.events.v1.showScriptEvent
 import build.buf.gen.com.zharguy.protos.scripts.models.v1.ShowScriptLine
 import build.buf.gen.com.zharguy.protos.scripts.models.v1.showScriptLine
 import com.google.protobuf.ByteString
+import com.google.protobuf.StringValue
 import com.zharguy.infinitepodcast.events.QueueChannelConstants
 import com.zharguy.infinitepodcast.events.publishers.DisplayScriptPublisher
 import com.zharguy.infinitepodcast.events.publishers.GenerateScriptPublisher
+import com.zharguy.infinitepodcast.events.publishers.ScriptStatusPublisher
 import com.zharguy.infinitepodcast.repos.ScriptsRepository
 import com.zharguy.infinitepodcast.repos.dbQuery
 import com.zharguy.infinitepodcast.repos.models.ExtUserSource
@@ -43,6 +48,9 @@ class ScriptService {
 
     @Inject
     lateinit var displayScriptPublisher: DisplayScriptPublisher
+
+    @Inject
+    lateinit var scriptStatusPublisher: ScriptStatusPublisher
 
     @Inject
     lateinit var scriptsRepository: ScriptsRepository
@@ -90,9 +98,36 @@ class ScriptService {
         val scriptModel = dbQuery {
             scriptsRepository.retrieveScriptById(scriptId).fromDataModel()
         }
-        val generatedScript = doGenerateScript(scriptModel)
-        val scriptWithAudio = doGenerateAudioForScript(generatedScript)
+        val event = scriptGenerationStatusEvent {
+            id = scriptModel.id.toString()
+            scriptRequestUser = scriptModel.requestingUser.toProto()
+        }
+
+        val generatedScript = try {
+            doGenerateScript(scriptModel)
+        } catch (e: Throwable) {
+            logger.info("publishing failure message for script generation", *scriptModel.getLoggerArgs())
+            scriptStatusPublisher.send(event.copy {
+                status = ScriptGenerationStatus.SCRIPT_GENERATION_STATUS_FAILED_SCRIPT
+                message = StringValue.of(e.message)
+            })
+            throw e
+        }
+        val scriptWithAudio = try {
+            doGenerateAudioForScript(generatedScript)
+        } catch (e: Throwable) {
+            logger.info("publishing failure message for audio generation", *scriptModel.getLoggerArgs())
+            scriptStatusPublisher.send(event.copy {
+                status = ScriptGenerationStatus.SCRIPT_GENERATION_STATUS_FAILED_AUDIO
+                message = StringValue.of(e.message)
+            })
+            throw e
+        }
         doPublishScript(scriptWithAudio)
+        // Publish successful generation message to consumers
+        scriptStatusPublisher.send(event.copy {
+            status = ScriptGenerationStatus.SCRIPT_GENERATION_STATUS_SUCCEEDED
+        })
         return generatedScript
     }
 
