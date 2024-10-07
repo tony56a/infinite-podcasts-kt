@@ -57,7 +57,7 @@ class ScriptService {
 
     suspend fun addScript(scriptModel: ScriptModel, processSync: Boolean = false): ScriptModel {
         val persistedScript = try {
-            val scriptDataModel = dbQuery {
+            dbQuery {
                 // Create the user/return the existing user
                 val user = userService.addUser(scriptModel.requestingUser)
 
@@ -66,10 +66,8 @@ class ScriptService {
                     status = ScriptStatus.PENDING,
                     scriptLines = null
                 )
-                scriptsRepository.createScript(scriptToCreate.toDataModel())
+                scriptsRepository.createScript(scriptToCreate.toDataModel()).fromDataModel()
             }
-            scriptDataModel.fromDataModel()
-
         } catch (e: Exception) {
             logger.warn("request failed", kv("exception", e))
             throw e
@@ -133,9 +131,12 @@ class ScriptService {
 
     private suspend fun doGenerateAudioForScript(script: ScriptModel): ScriptModel {
         val scriptWithAudio = audioGenerationService.generateAudioForScript(script)
+        val mapping = requireNotNull(scriptWithAudio.characterVoiceMapping).mapValues { characterVoiceMapping ->
+            characterVoiceMapping.value.toDataModel()
+        }
         if (script.characterVoiceMapping == null) {
             dbQuery {
-                scriptsRepository.updateScriptAudio(scriptWithAudio.toDataModel())
+                scriptsRepository.updateScriptAudio(requireNotNull(scriptWithAudio.id), mapping)
             }
         }
 
@@ -168,7 +169,6 @@ class ScriptService {
                 this.guestState = guestState
                 this.audioContent = ByteString.copyFrom(requireNotNull(script.scriptLineAudio).getValue(line))
             }
-
         }
 
         val event = showScriptEvent {

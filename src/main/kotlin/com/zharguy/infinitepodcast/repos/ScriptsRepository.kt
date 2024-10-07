@@ -1,5 +1,6 @@
 package com.zharguy.infinitepodcast.repos
 
+import com.zharguy.infinitepodcast.repos.models.ScriptCharacterAudioDataModel
 import com.zharguy.infinitepodcast.repos.models.ScriptDataModel
 import com.zharguy.infinitepodcast.repos.tables.*
 import jakarta.inject.Inject
@@ -53,12 +54,12 @@ class ScriptsRepository {
         return retrieveScriptById(requireNotNull(script.id))
     }
 
-    fun updateScriptAudio(script: ScriptDataModel): ScriptDataModel {
-        retrieveScriptById(requireNotNull(script.id))
-        Scripts.update({ Scripts.id eq script.id }) {
-            it[characterVoiceMapping] = script.characterVoiceMapping
+    fun updateScriptAudio(id: UUID, mapping: Map<String, ScriptCharacterAudioDataModel>): ScriptDataModel {
+        retrieveScriptById(requireNotNull(id))
+        Scripts.update({ Scripts.id eq id }) {
+            it[characterVoiceMapping] = mapping
         }
-        return retrieveScriptById(requireNotNull(script.id))
+        return retrieveScriptById(id)
     }
 
     fun retrieveScriptById(scriptId: UUID): ScriptDataModel {

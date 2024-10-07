@@ -28,6 +28,11 @@ interface ServiceMappers {
     fun toDataModel(promptTemplateModel: PromptTemplateModel): PromptTemplateDataModel
 
     fun fromDataModel(promptTemplateDataModel: PromptTemplateDataModel): PromptTemplateModel
+
+    fun toDataModel(model: ScriptCharacterAudioModel): ScriptCharacterAudioDataModel
+
+    fun fromDataModel(dataModel: ScriptCharacterAudioDataModel): ScriptCharacterAudioModel
+
 }
 
 private val mapper: ServiceMappers = Mappers.getMapper(ServiceMappers::class.java)
@@ -43,3 +48,5 @@ fun ScriptDataModel.fromDataModel() = mapper.fromDataModel(this)
 fun PromptTemplateModel.toDataModel() = mapper.toDataModel(this)
 
 fun PromptTemplateDataModel.fromDataModel() = mapper.fromDataModel(this)
+
+fun ScriptCharacterAudioModel.toDataModel() = mapper.toDataModel(this)
