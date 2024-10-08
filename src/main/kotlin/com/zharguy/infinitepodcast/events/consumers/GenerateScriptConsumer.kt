@@ -18,8 +18,8 @@ class GenerateScriptConsumer {
     @Inject
     lateinit var scriptService: ScriptService
 
-    @Queue(QueueChannelConstants.SCRIPT_PROCESSING_QUEUE_NAME)
-    fun updateAnalytics(message: GenerateScriptEvent) {
+    @Queue(QueueChannelConstants.SCRIPT_PROCESSING_QUEUE_NAME, prefetch = 1)
+    fun processMessage(message: GenerateScriptEvent) {
         runBlocking {
             try {
                 scriptService.generateScript(UUID.fromString(message.id))

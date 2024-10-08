@@ -17,7 +17,11 @@ class ChannelPoolListener : ChannelInitializer() {
 
     override fun initialize(channel: Channel, name: String) {
         channel.exchangeDeclare(SVC_EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true)
-        channel.queueDeclare(SCRIPT_PROCESSING_QUEUE_NAME, true, false, false, null)
+        channel.queueDeclare(
+            SCRIPT_PROCESSING_QUEUE_NAME, true, false, false,
+            // Set priority levels for user/admin-generated requests
+            mapOf("x-max-priority" to 3)
+        )
         channel.queueBind(SCRIPT_PROCESSING_QUEUE_NAME, SVC_EXCHANGE_NAME, SCRIPT_PROCESSING_QUEUE_KEY)
 
         channel.exchangeDeclare(REQUESTER_EXCHANGE_NAME, BuiltinExchangeType.FANOUT, true)

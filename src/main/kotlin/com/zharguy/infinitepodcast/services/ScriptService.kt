@@ -82,10 +82,17 @@ class ScriptService {
             }
         } else {
             logger.info("publishing event processing script", *persistedScript.getLoggerArgs())
+            val priority = when (persistedScript.requestingUser.userSource) {
+                ExtUserSource.ADMIN -> 2
+                ExtUserSource.DISCORD -> 1
+                ExtUserSource.TWITCH -> 1
+                ExtUserSource.AUTOMATION -> 0
+            }
             generateEventPublisher.send(
-                generateScriptEvent {
+                event = generateScriptEvent {
                     this.id = persistedScript.id.toString()
-                }
+                },
+                priority = priority
             )
             persistedScript
         }
