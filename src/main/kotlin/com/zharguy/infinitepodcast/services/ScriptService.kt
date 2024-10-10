@@ -92,7 +92,6 @@ class ScriptService {
         }
 
         publishScriptGenerationEvent(scriptModel)
-
         return scriptModel
     }
 
@@ -103,6 +102,7 @@ class ScriptService {
         val event = scriptGenerationStatusEvent {
             id = scriptModel.id.toString()
             scriptRequestUser = scriptModel.requestingUser.toProto()
+            topic = scriptModel.topic
         }
 
         val generatedScript = try {
