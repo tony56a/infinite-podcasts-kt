@@ -13,7 +13,7 @@ import org.apache.commons.text.StringSubstitutor
 
 private const val RANDOM_VOICE_TYPE_STR = "male or female"
 
-private const val RANDOM_NAME_STR = "a random and absurd name"
+private const val RANDOM_NAME_STR = "a random and ordinary name"
 
 private val logger = KotlinLogging.logger {}
 
