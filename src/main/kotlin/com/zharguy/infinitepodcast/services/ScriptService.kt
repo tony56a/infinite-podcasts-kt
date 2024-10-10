@@ -81,22 +81,19 @@ class ScriptService {
                 persistedScript
             }
         } else {
-            logger.info("publishing event processing script", *persistedScript.getLoggerArgs())
-            val priority = when (persistedScript.requestingUser.userSource) {
-                ExtUserSource.ADMIN -> 2
-                ExtUserSource.DISCORD -> 1
-                ExtUserSource.TWITCH -> 1
-                ExtUserSource.AUTOMATION -> 0
-            }
-            generateEventPublisher.send(
-                event = generateScriptEvent {
-                    this.id = persistedScript.id.toString()
-                },
-                priority = priority
-            )
+            publishScriptGenerationEvent(persistedScript)
             persistedScript
         }
+    }
 
+    suspend fun generateScriptAsync(scriptId: UUID): ScriptModel {
+        val scriptModel = dbQuery {
+            scriptsRepository.retrieveScriptById(scriptId).fromDataModel()
+        }
+
+        publishScriptGenerationEvent(scriptModel)
+
+        return scriptModel
     }
 
     suspend fun generateScript(scriptId: UUID): ScriptModel {
@@ -134,6 +131,23 @@ class ScriptService {
             status = ScriptGenerationStatus.SCRIPT_GENERATION_STATUS_SUCCEEDED
         })
         return generatedScript
+    }
+
+
+    private fun publishScriptGenerationEvent(persistedScript: ScriptModel) {
+        logger.info("publishing event processing script", *persistedScript.getLoggerArgs())
+        val priority = when (persistedScript.requestingUser.userSource) {
+            ExtUserSource.ADMIN -> 2
+            ExtUserSource.DISCORD -> 1
+            ExtUserSource.TWITCH -> 1
+            ExtUserSource.AUTOMATION -> 0
+        }
+        generateEventPublisher.send(
+            event = generateScriptEvent {
+                this.id = persistedScript.id.toString()
+            },
+            priority = priority
+        )
     }
 
     private suspend fun doGenerateAudioForScript(script: ScriptModel): ScriptModel {

@@ -62,7 +62,7 @@ class ScriptServiceHandler : ScriptServiceGrpcKt.ScriptServiceCoroutineImplBase(
         }
 
         val scriptModel =
-            scriptService.generateScript(UUID.fromString(request.id))
+            scriptService.generateScriptAsync(UUID.fromString(request.id))
 
         return generateScriptResponse {
             this.script = scriptModel.toProto()
