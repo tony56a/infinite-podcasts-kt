@@ -52,9 +52,12 @@ class ScriptGenService {
     }
 
     private fun generatePrompt(request: ScriptModel, promptTemplate: PromptTemplateModel): String {
+        val characterTypeList = listOf(CharacterType.NORMAL, CharacterType.ROBOT, CharacterType.ROBOT)
+
         // Get character info
         val guestCharacter = requireNotNull(request.characters).single()
-        val guestTypeStr = (guestCharacter.characterType ?: CharacterType.NORMAL).toString().lowercase()
+        val guestTypeStr =
+            (guestCharacter.characterType ?: characterTypeList.random()).toString().lowercase()
         val guestVoiceTypeStr = guestCharacter.speakerVoiceType?.toString()?.lowercase() ?: RANDOM_VOICE_TYPE_STR
         val guestNameStr = guestCharacter.name?.let { name ->
             "the name $name"
