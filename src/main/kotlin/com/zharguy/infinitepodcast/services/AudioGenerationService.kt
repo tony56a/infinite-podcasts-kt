@@ -19,7 +19,7 @@ private val logger = KotlinLogging.logger {}
 @Singleton
 class AudioGenerationService {
 
-    val maleVoices: List<ScriptCharacterAudioModel> = listOf(
+    private val maleVoices: List<ScriptCharacterAudioModel> = listOf(
         ScriptCharacterAudioModel(
             voiceType = "p259",
             voiceSpeedMultiplier = 0.8,
@@ -52,7 +52,7 @@ class AudioGenerationService {
         ),
     )
 
-    val femaleVoices: List<ScriptCharacterAudioModel> = listOf(
+    private val femaleVoices: List<ScriptCharacterAudioModel> = listOf(
         ScriptCharacterAudioModel(
             voiceType = "p299",
             voiceSpeedMultiplier = 0.65,
@@ -84,6 +84,8 @@ class AudioGenerationService {
             audioSource = AudioSource.OPENEDAI
         ),
     )
+
+    private val combinedVoices = maleVoices + femaleVoices
 
     @Inject
     lateinit var mimicService: MimicService
@@ -132,17 +134,26 @@ class AudioGenerationService {
         for (scriptLineCharacter in scriptLineCharacters) {
             val trimmedCharacterName = scriptLineCharacter.trim().lowercase()
 
-            for ((guest, guestName) in guestNames) {
-                if (guestName.any { component -> trimmedCharacterName.contains(component) } ||
-                    trimmedCharacterName.contains("guest")) {
-                    retVal[scriptLineCharacter] = getGuestVoice(guest)
-                }
-            }
-
+            // Otherwise, check to see if it's the host
             if (trimmedCharacterName.contains("host") ||
                 trimmedCharacterName.contains(hostName)
             ) {
                 retVal[scriptLineCharacter] = getHostVoice()
+                continue
+            }
+
+            // Loop through known guest characters, and assign voice
+            for ((guest, guestName) in guestNames) {
+                if (guestName.any { component -> trimmedCharacterName.contains(component) } ||
+                    trimmedCharacterName.contains("guest")) {
+                    retVal[scriptLineCharacter] = getGuestVoice(guest)
+                    continue
+                }
+            }
+
+            // Escape hatch, generate a completely random one
+            if (!retVal.contains(scriptLineCharacter)) {
+                retVal[scriptLineCharacter] = getGuestVoice(null)
             }
         }
 
@@ -164,8 +175,8 @@ class AudioGenerationService {
         )
     }
 
-    private fun getGuestVoice(guestCharacter: ScriptGuestCharacterModel): ScriptCharacterAudioModel {
-        if (guestCharacter.characterType == CharacterType.ROBOT) {
+    private fun getGuestVoice(guestCharacter: ScriptGuestCharacterModel?): ScriptCharacterAudioModel {
+        if (guestCharacter?.characterType == CharacterType.ROBOT) {
             return ScriptCharacterAudioModel(
                 voiceType = "fem",
                 voiceSpeedMultiplier = 0.9,
@@ -173,9 +184,11 @@ class AudioGenerationService {
             )
         }
 
-        return when (guestCharacter.speakerVoiceType) {
+        return when (guestCharacter?.speakerVoiceType) {
             SpeakerVoiceType.MALE -> maleVoices.random()
             SpeakerVoiceType.FEMALE -> femaleVoices.random()
+            // If null, then the character wasn't expected, pick one at complete random
+            null -> combinedVoices.random()
             else -> throw IllegalArgumentException()
         }
     }

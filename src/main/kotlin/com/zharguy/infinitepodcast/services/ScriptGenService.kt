@@ -48,7 +48,8 @@ class ScriptGenService {
     }
 
     private fun selectLlmClient(request: ScriptModel): Pair<LlmService, LlmModel> {
-        return Pair(groqService, LlmModel.LLAMA31_70B)
+        val models = listOf(LlmModel.LLAMA31_70B, LlmModel.LLAMA32_90B, LlmModel.LLAMA3_70B)
+        return Pair(groqService, models.random())
     }
 
     private fun generatePrompt(request: ScriptModel, promptTemplate: PromptTemplateModel): String {
